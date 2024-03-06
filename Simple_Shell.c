@@ -21,12 +21,7 @@ int main(void){
 		printf("~%s$ ",cwd);
 
 		fgets(arg, MAX_INPUT_LENGTH, stdin);
-		for(int i = 0; i < MAX_INPUT_LENGTH; i++){
-			if(arg[i] == '\n'){
-				arg[i] = '\0';
-				break;
-			}
-		}
+		arg[strcspn(arg, "\n")] = '\0';
 		token = strtok(arg, " ");
 		while(token != NULL){
 			args[counter] = token;
@@ -37,7 +32,7 @@ int main(void){
 		//int size = sizeof(cwd);
 		//printf("%d",size);
 
-		for(int i = 0; i < counter; i++){printf("%s",args[i]);} return 0;
+		//for(int i = 0; i < counter; i++){printf("%s",args[i]);} return 0;
 
 		int pid = fork();
 		if(pid < 0){
