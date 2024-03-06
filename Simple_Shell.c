@@ -29,25 +29,31 @@ int main(void){
 			counter++;
 		}
 
-		//int size = sizeof(cwd);
-		//printf("%d",size);
-
-		//for(int i = 0; i < counter; i++){printf("%s",args[i]);} return 0;
-
-		int pid = fork();
-		if(pid < 0){
-			printf("error in the fork stage/n");
-			return 1;
-		}else if(pid == 0){
-			//Child Process
-			args[counter] = NULL;
-			if(execvp(args[0], args) == -1){
-				printf("Child execution faild!\n");
+		if(strcmp(args[0],"cd") == 0){
+			chdir(args[1]);
+		}else if(strcmp(args[0], "echo") == 0){
+			for(int i = 1 ; i < 10 ; i++){
+				if(args[i] == NULL)
+					break;
+				printf("%s ", args[i]);
 			}
-			exit(1);
+			printf("\n");
 		}else{
-			//Parent Process
-			waitpid(pid, NULL, 0);
+			int pid = fork();
+			if(pid < 0){
+				printf("error in the fork stage/n");
+				return 1;
+			}else if(pid == 0){
+				//Child Process
+				args[counter] = NULL;
+				if(execvp(args[0], args) == -1){
+					printf("Child execution faild!\n");
+				}
+				exit(1);
+			}else{
+				//Parent Process
+				waitpid(pid, NULL, 0);
+			}
 		}
 	}
 	return 0;
