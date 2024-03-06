@@ -1,6 +1,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <sys/wait.h>
 
 #define MAX_INPUT_LENGTH 100
 
@@ -19,6 +21,12 @@ int main(void){
 		printf("~%s$ ",cwd);
 
 		fgets(arg, MAX_INPUT_LENGTH, stdin);
+		for(int i = 0; i < MAX_INPUT_LENGTH; i++){
+			if(arg[i] == '\n'){
+				arg[i] = '\0';
+				break;
+			}
+		}
 		token = strtok(arg, " ");
 		while(token != NULL){
 			args[counter] = token;
@@ -26,7 +34,10 @@ int main(void){
 			counter++;
 		}
 
-		//for(int i = 0; i < counter; i++){printf("%s\n",args[i]);}
+		//int size = sizeof(cwd);
+		//printf("%d",size);
+
+		for(int i = 0; i < counter; i++){printf("%s",args[i]);} return 0;
 
 		int pid = fork();
 		if(pid < 0){
@@ -34,10 +45,14 @@ int main(void){
 			return 1;
 		}else if(pid == 0){
 			//Child Process
-			return 0;
+			args[counter] = NULL;
+			if(execvp(args[0], args) == -1){
+				printf("Child execution faild!\n");
+			}
+			exit(1);
 		}else{
 			//Parent Process
-			
+			waitpid(pid, NULL, 0);
 		}
 	}
 	return 0;
