@@ -41,6 +41,7 @@ int main(void){
 
 		fgets(arg, MAX_INPUT_LENGTH, stdin);
 		arg[strcspn(arg, "\n")] = '\0';
+
 		process_args(arg, args, &counter);
 
 		if(strcmp(args[0],"cd") == 0){
@@ -52,7 +53,14 @@ int main(void){
 				printf("%s ", args[i]);
 			}
 			printf("\n");
-		}else{
+		} else if (strcmp(args[0],"export") == 0) {
+			char* name;
+			char* value;
+			name = strtok(args[1],"=");
+			value = strtok(NULL,"\"");
+			//printf("%s:%s",name,value);
+			setenv(name, value, 1);
+		} else {
 			int pid = fork();
 			if(pid < 0){
 				printf("error in the fork stage/n");
