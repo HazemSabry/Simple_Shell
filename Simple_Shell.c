@@ -24,7 +24,17 @@ int main(void){
 		arg[strcspn(arg, "\n")] = '\0';
 		token = strtok(arg, " ");
 		while(token != NULL){
-			args[counter] = token;
+			if (token[0] == '$') {
+				memmove(token, token + 1, strlen(token));
+			        char *value = getenv(token);
+			        if (value != NULL) {
+               				 args[counter] = value;
+			        } else {
+			                printf("%s environment variable not found\n", token);
+        			}
+			} else {
+				args[counter] = token;
+			}
 			token = strtok(NULL, " ");
 			counter++;
 		}
