@@ -6,6 +6,25 @@
 
 #define MAX_INPUT_LENGTH 100
 
+void process_args(char *arg, char **args, int *counter) {
+	char *token = strtok(arg, " ");
+	while (token != NULL) {
+		if (token[0] == '$') {
+			memmove(token, token + 1, strlen(token));
+			char *value = getenv(token);
+			if (value != NULL) {
+				process_args(value, args, counter);
+			} else {
+				printf("%s environment variable not found\n", token);
+                                return;
+                       	}
+                        } else {
+                                args[(*counter)++] = token;
+                        }
+                        token = strtok(NULL, " ");
+                }
+}
+
 int main(void){
 	while(1){
 		char cwd[128];
@@ -22,22 +41,7 @@ int main(void){
 
 		fgets(arg, MAX_INPUT_LENGTH, stdin);
 		arg[strcspn(arg, "\n")] = '\0';
-		token = strtok(arg, " ");
-		while(token != NULL){
-			if (token[0] == '$') {
-				memmove(token, token + 1, strlen(token));
-			        char *value = getenv(token);
-			        if (value != NULL) {
-               				 args[counter] = value;
-			        } else {
-			                printf("%s environment variable not found\n", token);
-        			}
-			} else {
-				args[counter] = token;
-			}
-			token = strtok(NULL, " ");
-			counter++;
-		}
+		process_args(arg, args, &counter);
 
 		if(strcmp(args[0],"cd") == 0){
 			chdir(args[1]);
