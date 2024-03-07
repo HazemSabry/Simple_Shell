@@ -6,7 +6,7 @@
 
 #define MAX_INPUT_LENGTH 100
 
-void process_args(char *arg, char **args, int *counter) {
+void process_args (char *arg, char **args, int *counter) {
 	char *token = strtok(arg, " ");
 	while (token != NULL) {
 		if (token[0] == '$') {
@@ -17,23 +17,23 @@ void process_args(char *arg, char **args, int *counter) {
 			} else {
 				printf("%s environment variable not found\n", token);
                                 return;
-                       	}
-                        } else {
-                                args[(*counter)++] = token;
                         }
-                        token = strtok(NULL, " ");
+		} else {
+                        args[(*counter)++] = token;
                 }
+                token = strtok(NULL, " ");
+        }
 }
 
-int main(void){
-	while(1){
+int main (void) {
+	while (1) {
 		char cwd[128];
 		char arg[MAX_INPUT_LENGTH];
 		char* token;
 		char* args[10];
 		int counter = 0;
 
-		if(getcwd(cwd, sizeof(cwd)) == NULL){
+		if (getcwd(cwd, sizeof(cwd)) == NULL) {
 			printf("error in ditermin the current work directory\n");
 			return 1;
 		};
@@ -44,11 +44,11 @@ int main(void){
 
 		process_args(arg, args, &counter);
 
-		if(strcmp(args[0],"cd") == 0){
+		if (strcmp(args[0],"cd") == 0) {
 			chdir(args[1]);
-		}else if(strcmp(args[0], "echo") == 0){
-			for(int i = 1 ; i < 10 ; i++){
-				if(args[i] == NULL)
+		} else if (strcmp(args[0], "echo") == 0) {
+			for (int i = 1 ; i < 10 ; i++) {
+				if (args[i] == NULL)
 					break;
 				printf("%s ", args[i]);
 			}
@@ -58,21 +58,22 @@ int main(void){
 			char* value;
 			name = strtok(args[1],"=");
 			value = strtok(NULL,"\"");
-			//printf("%s:%s",name,value);
 			setenv(name, value, 1);
+		} else if (strcmp(args[0],"exit") == 0) {
+			exit(0);
 		} else {
 			int pid = fork();
-			if(pid < 0){
+			if (pid < 0) {
 				printf("error in the fork stage/n");
 				return 1;
-			}else if(pid == 0){
+			} else if (pid == 0) {
 				//Child Process
 				args[counter] = NULL;
 				if(execvp(args[0], args) == -1){
 					printf("Child execution faild!\n");
 				}
 				exit(1);
-			}else{
+			} else {
 				//Parent Process
 				waitpid(pid, NULL, 0);
 			}
