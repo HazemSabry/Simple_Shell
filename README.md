@@ -1,2 +1,2 @@
 # Simple_Shell
-A lab project for me collage 
+A lab project for my collage 
