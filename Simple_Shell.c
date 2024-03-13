@@ -75,7 +75,11 @@ int main (void) {
 				exit(1);
 			} else {
 				//Parent Process
-				waitpid(pid, NULL, 0);
+				if (args[1] && strcmp(args[1],"&") == 0) {
+				
+				} else {
+					waitpid(pid, NULL, 0);
+				}
 			}
 		}
 	}
